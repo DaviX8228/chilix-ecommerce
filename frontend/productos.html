@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos - ChiliX</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    
+    <!-- NAVEGACIÓN -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+                </a>
+            </div>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link">Inicio</a></li>
+                <li><a href="quienes-somos.html" class="nav-link">¿Quiénes somos?</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="politicas.html" class="nav-link">Políticas</a></li>
+                <li><a href="login.html" class="nav-link" id="userLink">Iniciar sesión</a></li>
+                <li><a href="carrito.html" class="nav-link cart-link">
+                    🛒 Carrito <span class="cart-badge" id="cartBadge">0</span>
+                </a></li>
+            </ul>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero">
+        <div class="container">
+            <h1>Nuestros Productos</h1>
+            <p>Descubre el auténtico sabor mexicano en cada bocado. 100% artesanal, hecho con amor en el CECyT 8</p>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <section class="products-page">
+        <div class="container">
+
+            <!-- FILTROS -->
+            <div class="filters">
+                <div class="filter-tags">
+                    <div class="filter-tag active">🌶️ Todos</div>
+                    <div class="filter-tag">⭐ Más vendidos</div>
+                    <div class="filter-tag">🆕 Nuevos</div>
+                    <div class="filter-tag">💎 Premium</div>
+                </div>
+            </div>
+
+            <!-- PRODUCTO 1: ChiliX Snacks -->
+            <div class="product-detail-card">
+                <div class="product-detail-content">
+                    <div class="product-gallery">
+                        <div class="main-product-image">
+                            <span>🌶️</span>
+                            <div class="product-badge-large">Más vendido</div>
+                        </div>
+                        <div class="thumbnail-gallery">
+                            <div class="thumbnail">🌶️</div>
+                            <div class="thumbnail">🔥</div>
+                            <div class="thumbnail">🍋</div>
+                            <div class="thumbnail">✨</div>
+                        </div>
+                    </div>
+
+                    <div class="product-details">
+                        <div>
+                            <h2>ChiliX Snacks</h2>
+                            <div class="product-rating">
+                                ⭐⭐⭐⭐⭐ <span style="color: var(--color-gray-light);">(4.9/5.0 - 150 reseñas)</span>
+                            </div>
+                            <div class="product-price-large">$35 MXN</div>
+                            
+                            <p class="product-description">
+                                Nuestro producto estrella y el favorito del CECyT 8. Botanas crujientes cuidadosamente 
+                                seleccionadas, sazonadas con nuestra mezcla especial de chile piquín, limón y sal de mar. 
+                                El balance perfecto entre picante y ácido que te dejará con ganas de más.
+                            </p>
+
+                            <div class="product-features">
+                                <h4>✨ Características:</h4>
+                                <ul>
+                                    <li><strong>Tamaño:</strong> 100g (porción individual perfecta)</li>
+                                    <li><strong>Nivel de picante:</strong> Medio 🌶️🌶️🌶️</li>
+                                    <li><strong>Textura:</strong> Extra crujiente</li>
+                                    <li><strong>Ideal para:</strong> Recreo, entre clases, o snack nocturno</li>
+                                    <li><strong>Caducidad:</strong> 30 días desde producción</li>
+                                    <li><strong>Empaque:</strong> Bolsa sellada herméticamente</li>
+                                </ul>
+                            </div>
+
+                            <div class="ingredients">
+                                <h4>🥘 Ingredientes:</h4>
+                                <p>
+                                    Botanas de maíz, chile piquín, limón natural, sal de mar, ajo en polvo, 
+                                    cebolla en polvo, aceite vegetal. <strong>Sin conservadores artificiales.</strong>
+                                    <br><br>
+                                    <strong>Alérgenos:</strong> Puede contener trazas de cacahuate.
+                                </p>
+                            </div>
+
+                            <div class="customization-preview">
+                                <h4>🎨 ¡Personalízalo a tu gusto!</h4>
+                                <p>
+                                    Después de agregar al carrito podrás personalizar tu pedido con:<br>
+                                    • Chamoy (+$5) • Miguelito (+$5) • Limón extra (gratis) • Sin sal (gratis)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="add-to-cart-section">
+                            <div class="quantity-selector">
+                                <button onclick="changeQty('snacks', -1)">-</button>
+                                <span id="qty-snacks">1</span>
+                                <button onclick="changeQty('snacks', 1)">+</button>
+                            </div>
+                            <button class="add-to-cart-btn" onclick="addMultipleToCart('ChiliX Snacks', 35, 'snacks')">
+                                Agregar al carrito 🛒
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCTO 2: ChiliX Mix -->
+            <div class="product-detail-card">
+                <div class="product-detail-content">
+                    <div class="product-gallery">
+                        <div class="main-product-image" style="background: linear-gradient(135deg, #FFD84D, #FFA500);">
+                            <span>🔥</span>
+                            <div class="product-badge-large" style="background: var(--color-primary); color: var(--color-white);">Nuevo</div>
+                        </div>
+                        <div class="thumbnail-gallery">
+                            <div class="thumbnail">🔥</div>
+                            <div class="thumbnail">🌶️</div>
+                            <div class="thumbnail">🥜</div>
+                            <div class="thumbnail">🌽</div>
+                        </div>
+                    </div>
+
+                    <div class="product-details">
+                        <div>
+                            <h2>ChiliX Mix</h2>
+                            <div class="product-rating">
+                                ⭐⭐⭐⭐⭐ <span style="color: var(--color-gray-light);">(4.8/5.0 - 85 reseñas)</span>
+                            </div>
+                            <div class="product-price-large">$45 MXN</div>
+                            
+                            <p class="product-description">
+                                ¡La explosión de sabor! Una mezcla única de diferentes snacks enchilados cuidadosamente 
+                                seleccionados. Combina cacahuates japoneses, tostadas de maíz, chicharrones y más, 
+                                todo sazonado con nuestra salsa especial. Cada bocado es una aventura diferente.
+                                Perfecto para los que quieren probar de todo.
+                            </p>
+
+                            <div class="product-features">
+                                <h4>✨ Características:</h4>
+                                <ul>
+                                    <li><strong>Tamaño:</strong> 150g (porción generosa)</li>
+                                    <li><strong>Nivel de picante:</strong> Alto 🌶️🌶️🌶️🌶️</li>
+                                    <li><strong>Variedad:</strong> 5+ tipos de snacks diferentes</li>
+                                    <li><strong>Ideal para:</strong> Compartir con amigos, maratones de estudio</li>
+                                    <li><strong>Caducidad:</strong> 30 días desde producción</li>
+                                    <li><strong>Empaque:</strong> Bolsa sellada con cierre hermético</li>
+                                </ul>
+                            </div>
+
+                            <div class="ingredients">
+                                <h4>🥘 Ingredientes:</h4>
+                                <p>
+                                    Cacahuates japoneses, tostadas de maíz, chicharrones de harina, botanas de maíz, 
+                                    semillas de girasol, chile habanero, chile de árbol, limón, sal de mar, 
+                                    especias secretas de la casa. <strong>Sin conservadores artificiales.</strong>
+                                    <br><br>
+                                    <strong>Alérgenos:</strong> Contiene cacahuates. Puede contener trazas de soya.
+                                </p>
+                            </div>
+
+                            <div class="customization-preview">
+                                <h4>🎨 ¡Personalízalo a tu gusto!</h4>
+                                <p>
+                                    Después de agregar al carrito podrás personalizar tu pedido con:<br>
+                                    • Chamoy (+$5) • Miguelito (+$5) • Extra picante (gratis) • Menos sal (gratis)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="add-to-cart-section">
+                            <div class="quantity-selector">
+                                <button onclick="changeQty('mix', -1)">-</button>
+                                <span id="qty-mix">1</span>
+                                <button onclick="changeQty('mix', 1)">+</button>
+                            </div>
+                            <button class="add-to-cart-btn" onclick="addMultipleToCart('ChiliX Mix', 45, 'mix')">
+                                Agregar al carrito 🛒
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUCTO 3: ChiliX Box -->
+            <div class="product-detail-card">
+                <div class="product-detail-content">
+                    <div class="product-gallery">
+                        <div class="main-product-image" style="background: linear-gradient(135deg, #1A1A1A, #4A4A4A);">
+                            <span>📦</span>
+                            <div class="product-badge-large" style="background: linear-gradient(135deg, #FFD84D, #FFA500); color: var(--color-dark);">Premium</div>
+                        </div>
+                        <div class="thumbnail-gallery">
+                            <div class="thumbnail">📦</div>
+                            <div class="thumbnail">🎁</div>
+                            <div class="thumbnail">⭐</div>
+                            <div class="thumbnail">💎</div>
+                        </div>
+                    </div>
+
+                    <div class="product-details">
+                        <div>
+                            <h2>ChiliX Box</h2>
+                            <div class="product-rating">
+                                ⭐⭐⭐⭐⭐ <span style="color: var(--color-gray-light);">(5.0/5.0 - 45 reseñas)</span>
+                            </div>
+                            <div class="product-price-large">$120 MXN</div>
+                            
+                            <p class="product-description">
+                                La experiencia completa de ChiliX en una sola caja. Incluye nuestros 3 productos principales 
+                                (ChiliX Snacks, ChiliX Mix) más snacks exclusivos que solo encontrarás en esta presentación 
+                                premium. Ideal para regalar, para tus reuniones de estudio o simplemente para consentirte 
+                                después de una semana intensa de exámenes. ¡El regalo perfecto para los amantes del picante!
+                            </p>
+
+                            <div class="product-features">
+                                <h4>✨ Contenido de la caja:</h4>
+                                <ul>
+                                    <li><strong>1x ChiliX Snacks</strong> (100g) - El clásico que te encanta</li>
+                                    <li><strong>1x ChiliX Mix</strong> (150g) - La mezcla explosiva</li>
+                                    <li><strong>1x Snack exclusivo</strong> (80g) - Solo disponible en la Box</li>
+                                    <li><strong>Salsas especiales:</strong> Chamoy y valentina de cortesía</li>
+                                    <li><strong>Limones frescos</strong> - Para el toque final perfecto</li>
+                                    <li><strong>Servilletas</strong> - Porque sí pica 🔥</li>
+                                    <li><strong>Presentación:</strong> Caja premium con diseño de ChiliX</li>
+                                </ul>
+                            </div>
+
+                            <div class="ingredients">
+                                <h4>💎 ¿Por qué elegir la ChiliX Box?</h4>
+                                <p>
+                                    <strong>Ahorro:</strong> Comprando los productos por separado pagarías $150, 
+                                    con la Box ahorras $30 MXN.
+                                    <br><br>
+                                    <strong>Exclusividad:</strong> Incluye productos que no están disponibles individualmente.
+                                    <br><br>
+                                    <strong>Regalo ideal:</strong> Presentación premium perfecta para regalar en cumpleaños, 
+                                    celebraciones o simplemente para sorprender a alguien especial.
+                                    <br><br>
+                                    <strong>Experiencia completa:</strong> Prueba todo lo que ChiliX tiene para ofrecer.
+                                </p>
+                            </div>
+
+                            <div class="customization-preview">
+                                <h4>🎁 Personalización especial para la Box</h4>
+                                <p>
+                                    La ChiliX Box incluye todos los extras de cortesía, pero puedes agregar:<br>
+                                    • Tarjeta de dedicatoria personalizada (gratis)<br>
+                                    • Chamoy extra (+$10)<br>
+                                    • Miguelito extra (+$10)
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="add-to-cart-section">
+                            <div class="quantity-selector">
+                                <button onclick="changeQty('box', -1)">-</button>
+                                <span id="qty-box">1</span>
+                                <button onclick="changeQty('box', 1)">+</button>
+                            </div>
+                            <button class="add-to-cart-btn" onclick="addMultipleToCart('ChiliX Box', 120, 'box')">
+                                Agregar al carrito 🛒
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="cta-section">
+                <div class="container">
+                    <div class="cta-content">
+                        <h2>¿Listo para hacer tu pedido?</h2>
+                        <p>Revisa tu carrito y personaliza tus productos antes de confirmar</p>
+                        <a href="carrito.html" class="btn-primary btn-large">
+                            Ver mi carrito 🛒
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+                    </div>
+                    <p>El sabor que pica y encanta 🌶️</p>
+                    <p class="school-name">CECyT 8 "Narciso Bassols"</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Enlaces</h4>
+                    <a href="index.html">Inicio</a>
+                    <a href="quienes-somos.html">¿Quiénes somos?</a>
+                    <a href="politicas.html">Políticas</a>
+                    <a href="carrito.html">Carrito</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p>📧 hola@chilix.mx</p>
+                    <p>💬 WhatsApp: 55 1234 5678</p>
+                    <p>📍 CECyT 8, Gabriel Mancera</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 ChiliX - Fundado por David Velázquez</p>
+                <p>Hecho con ❤️ por estudiantes del IPN</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Cantidades de productos
+        let quantities = {
+            snacks: 1,
+            mix: 1,
+            box: 1
+        };
+
+        function changeQty(product, change) {
+            quantities[product] = Math.max(1, quantities[product] + change);
+            document.getElementById(`qty-${product}`).textContent = quantities[product];
+        }
+
+        function addMultipleToCart(name, price, product) {
+            const qty = quantities[product];
+            for (let i = 0; i < qty; i++) {
+                addToCart(name, price);
+            }
+            quantities[product] = 1;
+            document.getElementById(`qty-${product}`).textContent = 1;
+        }
+    </script>
+</body>
+</html>

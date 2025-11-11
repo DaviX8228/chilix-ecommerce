@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - ChiliX</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <!-- ========== NAVEGACIÓN ========== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+                </a>
+            </div>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="index.html#quienes-somos" class="nav-link">¿Quiénes somos?</a></li>
+                <li><a href="index.html#productos" class="nav-link">Productos</a></li>
+                <li><a href="politicas.html" class="nav-link">Políticas</a></li>
+                <li><a href="login.html" class="nav-link" id="userLink">👤 Iniciar sesión</a></li>
+                <li><a href="carrito.html" class="nav-link cart-link">
+                    🛒 Carrito <span class="cart-badge" id="cartBadgeNav">0</span>
+                </a></li>
+            </ul>
+            
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== PÁGINA DEL CARRITO ========== -->
+    <section class="cart-page">
+        <div class="container">
+            <div class="cart-header">
+                <h1>🛒 Mi Carrito</h1>
+                <p>Personaliza tus productos y revisa tu pedido</p>
+            </div>
+
+            <div class="cart-container" id="cartContainer">
+                <!-- Los items se cargarán dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+                    </div>
+                    <p>El sabor que pica y encanta 🌶️</p>
+                    <p class="school-name">CECyT 8 "Narciso Bassols"</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Enlaces</h4>
+                    <a href="index.html">Inicio</a>
+                    <a href="index.html#productos">Productos</a>
+                    <a href="politicas.html">Políticas</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p>📧 hola@chilix.mx</p>
+                    <p>💬 WhatsApp: 55 1234 5678</p>
+                    <p>📍 CECyT 8 "Narciso Bassols"</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 ChiliX - Fundado por David Velazquez</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="cart-functionality.js"></script>
+</body>
+</html>

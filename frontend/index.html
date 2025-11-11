@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChiliX - El sabor que pica y encanta</title>
+    
+    <!-- Fuente de Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Enlace al archivo CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <!-- ========== NAVEGACIÓN ========== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <!-- Logo de la marca -->
+            <div class="logo">
+                <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+            </div>
+            
+            <!-- Menú de navegación -->
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="quienes-somos.html" class="nav-link">¿Quiénes somos?</a></li>
+                <li><a href="productos.html" class="nav-link">Productos</a></li>
+                <li><a href="politicas.html" class="nav-link">Políticas</a></li>
+                <li><a href="login.html" class="nav-link" id="userLink">Iniciar sesión</a></li>
+                <li><a href="carrito.html" class="nav-link cart-link">
+                    🛒 Carrito <span class="cart-badge" id="cartBadge">0</span>
+                </a></li>
+            </ul>
+            
+            <!-- Botón hamburguesa para móvil -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========== SECCIÓN: INICIO ========== -->
+    <section id="inicio" class="hero">
+        <div class="hero-overlay"></div>
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title animate-fade-in">
+                    Bienvenido a <span class="brand-name">ChiliX</span>
+                </h1>
+                <p class="hero-slogan animate-fade-in-delay">
+                    🌶️ El sabor que pica y encanta 🌶️
+                </p>
+                <p class="hero-description animate-fade-in-delay-2">
+                    Los mejores snacks enchilados del CECyT 8 "Narciso Bassols". 
+                    Sabor auténtico mexicano hecho por estudiantes, para estudiantes.
+                </p>
+                <div class="hero-buttons animate-fade-in-delay-3">
+                    <a href="#productos" class="btn-primary">
+                        Ver productos
+                    </a>
+                    <a href="carrito.html" class="btn-secondary">
+                        🛒 Mi carrito
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Imagen decorativa de productos -->
+            <div class="hero-image animate-float">
+                <div class="product-showcase">
+                    <div class="product-circle">🌶️</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SECCIÓN: ¿QUIÉNES SOMOS? ========== -->
+    <section id="quienes-somos" class="about-section">
+        <div class="container">
+            <h2 class="section-title">¿Quiénes somos?</h2>
+            
+            <!-- Historia destacada -->
+            <div class="founder-story">
+                <div class="founder-content">
+                    <div class="founder-icon">
+                        <div class="logo2">
+                <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+            </div>
+                    </div>
+                    <h3>Nuestra Historia</h3>
+                    <p>
+                        <strong>ChiliX nació en 2025</strong> como un proyecto escolar de 
+                        <strong>David Velazquez</strong>, estudiante de la carrera de 
+                        <strong>Técnico en Computación del CECyT 8 "Narciso Bassols"</strong>.
+                    </p>
+                    <p>
+                        Lo que comenzó como una idea sencilla de vender snacks enchilados entre 
+                        compañeros, poco a poco se fue diferenciando por la calidad y el sabor único 
+                        de nuestros productos. El éxito fue tal que obtuvimos el 
+                        <strong>permiso oficial de la dirección del plantel</strong> para operar 
+                        dentro de la escuela.
+                    </p>
+                    <p>
+                        Hoy, ChiliX es la marca favorita de snacks de los estudiantes del CECyT 8, 
+                        combinando tradición mexicana con emprendimiento juvenil.
+                    </p>
+                </div>
+            </div>
+
+            <div class="about-grid">
+                
+                <!-- Misión -->
+                <div class="about-card">
+                    <div class="about-icon">🎯</div>
+                    <h3>Misión</h3>
+                    <p>
+                        Ofrecer a la comunidad estudiantil del CECyT 8 snacks enchilados de 
+                        calidad premium, con sabores auténticos y precios accesibles, mientras 
+                        promovemos el emprendimiento juvenil dentro de nuestro plantel.
+                    </p>
+                </div>
+                
+                <!-- Visión -->
+                <div class="about-card">
+                    <div class="about-icon">🚀</div>
+                    <h3>Visión</h3>
+                    <p>
+                        Convertirnos en la marca de snacks enchilados más reconocida del CECyT 8 
+                        para finales de 2025, expandirnos a otros planteles del IPN y demostrar 
+                        que los estudiantes podemos crear negocios exitosos.
+                    </p>
+                </div>
+                
+                <!-- Valores -->
+                <div class="about-card full-width">
+                    <div class="about-icon">⭐</div>
+                    <h3>Nuestros Valores</h3>
+                    <div class="values-grid">
+                        <div class="value-item">
+                            <strong>💪 Pasión:</strong> Amamos lo que hacemos
+                        </div>
+                        <div class="value-item">
+                            <strong>🏆 Calidad:</strong> Solo lo mejor para nuestros compañeros
+                        </div>
+                        <div class="value-item">
+                            <strong>🇲🇽 Orgullo Politécnico:</strong> Hechos por "Burros Blancos"
+                        </div>
+                        <div class="value-item">
+                            <strong>🌱 Emprendimiento:</strong> Estudiantes que hacen negocios
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== SECCIÓN: PRODUCTOS ========== -->
+    <section id="productos" class="products-section">
+        <div class="container">
+            <h2 class="section-title">Nuestros Productos</h2>
+            <p class="section-subtitle">Elige tu favorito y disfruta del mejor sabor enchilado del CECyT 8</p>
+            
+            <div class="products-grid">
+                
+                <!-- Producto 1: ChiliX Snacks -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <!-- Imagen principal -->
+                        <div class="main-image">
+                            <img src="images/snacks-1.jpg" alt="ChiliX Snacks" onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\'><span class=\'product-emoji\'>🌶️</span></div>'">
+                        </div>
+                        <!-- Miniaturas -->
+                        <div class="thumbnail-images">
+                            <img src="images/snacks-2.jpg" alt="ChiliX Snacks 2" onerror="this.style.display='none'">
+                            <img src="images/snacks-3.jpg" alt="ChiliX Snacks 3" onerror="this.style.display='none'">
+                            <img src="images/snacks-4.jpg" alt="ChiliX Snacks 4" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <span class="product-badge">Más vendido</span>
+                    <div class="product-info">
+                        <h3 class="product-name">ChiliX Snacks</h3>
+                        <p class="product-description">
+                            Nuestro clásico. Botanas crujientes con el toque perfecto de chile 
+                            y limón. Ideal para el recreo o entre clases. ¡El favorito del plantel!
+                        </p>
+                        <div class="product-footer">
+                            <span class="product-price">$35 MXN</span>
+                            <button class="btn-buy" onclick="addToCart('ChiliX Snacks', 35)">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 2: ChiliX Mix -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <!-- Imagen principal -->
+                        <div class="main-image">
+                            <img src="images/mix-1.jpg" alt="ChiliX Mix" onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\' style=\'background: linear-gradient(135deg, #FFD84D, #FFA500);\'><span class=\'product-emoji\'>🔥</span></div>'">
+                        </div>
+                        <!-- Miniaturas -->
+                        <div class="thumbnail-images">
+                            <img src="images/mix-2.jpg" alt="ChiliX Mix 2" onerror="this.style.display='none'">
+                            <img src="images/mix-3.jpg" alt="ChiliX Mix 3" onerror="this.style.display='none'">
+                            <img src="images/mix-4.jpg" alt="ChiliX Mix 4" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <span class="product-badge new">Nuevo</span>
+                    <div class="product-info">
+                        <h3 class="product-name">ChiliX Mix</h3>
+                        <p class="product-description">
+                            Una mezcla explosiva de diferentes snacks enchilados. Variedad de 
+                            sabores y texturas en cada bocado. ¡Para los más aventureros del CECyT 8!
+                        </p>
+                        <div class="product-footer">
+                            <span class="product-price">$45 MXN</span>
+                            <button class="btn-buy" onclick="addToCart('ChiliX Mix', 45)">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 3: ChiliX Box -->
+                <div class="product-card">
+                    <div class="product-images">
+                        <!-- Imagen principal -->
+                        <div class="main-image">
+                            <img src="images/box-1.jpg" alt="ChiliX Box" onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\' style=\'background: linear-gradient(135deg, #1A1A1A, #4A4A4A);\'><span class=\'product-emoji\'>📦</span></div>'">
+                        </div>
+                        <!-- Miniaturas -->
+                        <div class="thumbnail-images">
+                            <img src="images/box-2.jpg" alt="ChiliX Box 2" onerror="this.style.display='none'">
+                            <img src="images/box-3.jpg" alt="ChiliX Box 3" onerror="this.style.display='none'">
+                            <img src="images/box-4.jpg" alt="ChiliX Box 4" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    <span class="product-badge premium">Premium</span>
+                    <div class="product-info">
+                        <h3 class="product-name">ChiliX Box</h3>
+                        <p class="product-description">
+                            La caja premium. Incluye todos nuestros productos más snacks exclusivos 
+                            y sorpresas. Perfecto para regalar o consentirte después de los exámenes.
+                        </p>
+                        <div class="product-footer">
+                            <span class="product-price">$120 MXN</span>
+                            <button class="btn-buy" onclick="addToCart('ChiliX Box', 120)">
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CTA: VER CARRITO ========== -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>¿Listo para ordenar?</h2>
+                <p>Revisa tu carrito y completa tu pedido. ¡Entrega en el CECyT 8!</p>
+                <a href="carrito.html" class="btn-primary btn-large">
+                    Ver mi carrito 🛒
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+                    </div>
+                    <p>El sabor que pica y encanta 🌶️</p>
+                    <p class="school-name">CECyT 8 "Narciso Bassols"</p>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Enlaces</h4>
+                    <a href="#inicio">Inicio</a>
+                    <a href="#quienes-somos">¿Quiénes somos?</a>
+                    <a href="#productos">Productos</a>
+                    <a href="politicas.html">Políticas</a>
+                    <a href="carrito.html">Carrito</a>
+                </div>
+                
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p>📧 hola@chilix.mx</p>
+                    <p>💬 WhatsApp: 55 1234 5678</p>
+                    <p>📍 CECyT 8 "Narciso Bassols"</p>
+                </div>
+                
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 ChiliX - Fundado por David Velazquez. Todos los derechos reservados.</p>
+                <p>Hecho con ❤️ por estudiantes del IPN</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notificación flotante para el carrito -->
+    <div id="cartNotification" class="cart-notification">
+        <p id="cartMessage"></p>
+    </div>
+
+    <!-- Enlace al archivo JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - ChiliX</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="login-logo">
+                    <span class="logo-chili">Chili</span><span class="logo-x">X</span>
+                </div>
+                <h2>Bienvenido</h2>
+                <p>Inicia sesión o crea tu cuenta</p>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('login')">Iniciar Sesión</button>
+                <button class="tab" onclick="switchTab('register')">Registrarse</button>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <p>✅ <span id="successText"></span></p>
+            </div>
+
+            <!-- Formulario de Login -->
+            <div class="form-section active" id="loginForm">
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">📧 Correo electrónico</label>
+                        <input type="email" id="loginEmail" placeholder="tu@correo.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">🔒 Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="Tu contraseña" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                <div class="backend-notice">
+                    <h4>⚠️ MODO SIMULACIÓN</h4>
+                    <p>
+                        Actualmente el sistema funciona con localStorage.<br>
+                        Para autenticación real se requiere:<br>
+                        <strong>• Backend (Node.js + Express)</strong><br>
+                        <strong>• Base de datos MySQL</strong><br>
+                        <strong>• Sistema de sesiones</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Formulario de Registro -->
+            <div class="form-section" id="registerForm">
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="registerNombre">👤 Nombre completo</label>
+                        <input type="text" id="registerNombre" placeholder="Tu nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail">📧 Correo electrónico</label>
+                        <input type="email" id="registerEmail" placeholder="tu@correo.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerTelefono">📱 Teléfono (WhatsApp)</label>
+                        <input type="tel" id="registerTelefono" placeholder="55 1234 5678" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">🔒 Contraseña</label>
+                        <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" minlength="6"
+                            required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        Crear Cuenta
+                    </button>
+                </form>
+
+                <div class="backend-notice">
+                    <h4>⚠️ MODO SIMULACIÓN</h4>
+                    <p>
+                        Las cuentas se guardan temporalmente en tu navegador.<br>
+                        Con backend real tendrás:<br>
+                        <strong>• Verificación de email</strong><br>
+                        <strong>• Contraseñas encriptadas</strong><br>
+                        <strong>• Historial de pedidos</strong>
+                    </p>
+                </div>
+            </div>
+
+            <a href="index.html" class="back-link">← Volver al inicio</a>
+        </div>
+    </div>
+
+    <script>
+        // Cambiar entre tabs
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            const forms = document.querySelectorAll('.form-section');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                tabs[0].classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        // Mostrar mensaje de éxito
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            successText.textContent = message;
+            successDiv.classList.add('show');
+
+            setTimeout(() => {
+                successDiv.classList.remove('show');
+            }, 3000);
+        }
+
+        // Manejar login
+        // Login
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/usuarios/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Guardar sesión
+                    localStorage.setItem('chilixUser', JSON.stringify(data.data));
+                    showSuccess('¡Bienvenido de nuevo!');
+
+                    setTimeout(() => {
+                        window.location.href = 'carrito.html';
+                    }, 1500);
+                } else {
+                    alert('❌ ' + data.error);
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al iniciar sesión');
+            }
+        }
+
+        // Registro
+        async function handleRegister(event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById('registerNombre').value;
+            const email = document.getElementById('registerEmail').value;
+            const telefono = document.getElementById('registerTelefono').value;
+            const password = document.getElementById('registerPassword').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/usuarios/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nombre, email, telefono, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Guardar sesión
+                    localStorage.setItem('chilixUser', JSON.stringify(data.data));
+                    showSuccess('¡Cuenta creada exitosamente!');
+
+                    setTimeout(() => {
+                        window.location.href = 'carrito.html';
+                    }, 1500);
+                } else {
+                    alert('❌ ' + (data.error || 'Error al registrar'));
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al crear cuenta');
+            }
+        }
+
+        // Verificar si ya está logueado
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = localStorage.getItem('chilixUser');
+            if (user) {
+                if (confirm('Ya tienes una sesión activa. ¿Ir al carrito?')) {
+                    window.location.href = 'carrito.html';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
