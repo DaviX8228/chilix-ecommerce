@@ -1,9 +1,8 @@
-/* 
+/* ========================================
    FUNCIONALIDAD DEL CARRITO CON PERSONALIZACIÓN
-   
-*/
+   ======================================== */
 
-// Verificar si el usuario está logueado w
+// Verificar si el usuario está logueado
 function isUserLoggedIn() {
     const user = localStorage.getItem('chilixUser');
     return user !== null;
@@ -99,7 +98,7 @@ function renderCart() {
         return `
             <div class="cart-item" id="item-${index}">
                 <div class="item-header">
-                    <div class="item-image">🌶️</div> <!-- íconos sacados de EmojiTerra -->
+                    <div class="item-image">🌶️</div>   <!-- Emojis sacados de EMOJI TERRA y Claude -->
                     <div class="item-info">
                         <h3>${item.name}</h3>
                         <p style="color: var(--color-gray-light); font-size: 0.9rem;">
@@ -117,11 +116,11 @@ function renderCart() {
                     </div>
                     
                     <button class="customize-btn" onclick="toggleCustomization(${index})">
-                         Personalizar
+                        🎨 Personalizar
                     </button>
                     
                     <button class="remove-btn" onclick="removeItem(${index})">
-                         Eliminar
+                        ❌ Eliminar
                     </button>
                 </div>
                 
@@ -376,7 +375,6 @@ async function checkout() {
             // Limpiar carrito después de un momento
             setTimeout(() => {
                 localStorage.setItem('chilixCart', JSON.stringify([]));
-                // La recarga se hace desde generateTicket
             }, 2000);
         } else {
             alert('Error al crear pedido: ' + data.error);
@@ -414,7 +412,7 @@ function getProductIdByName(name) {
     return ids[name] || 1;
 }
 
-// Generar ticket de compra
+// Generar ticket de compra CON QR CODE REAL
 function generateTicket(data) {
     const ticketWindow = window.open('', '_blank', 'width=400,height=700');
 
@@ -453,6 +451,11 @@ function generateTicket(data) {
             </tr>
         `;
     }
+
+    // 🔥 AQUÍ ESTÁ LO NUEVO: Crear el QR CODE con datos del pedido
+    // Usamos la API gratuita de qrserver.com
+    const qrData = `ChiliX-Pedido:${data.orderNumber}|Cliente:${data.user.nombre}|Total:$${data.total}|Fecha:${data.date}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
 
     const ticketHTML = `
         <!DOCTYPE html>
@@ -527,18 +530,24 @@ function generateTicket(data) {
                     font-size: 11px;
                     color: #999;
                 }
-                .qr-placeholder {
-                    width: 120px;
-                    height: 120px;
-                    margin: 15px auto;
-                    background: #f0f0f0;
-                    border: 2px dashed #ccc;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 10px;
-                    color: #999;
+                .qr-container {
                     text-align: center;
+                    margin: 20px 0;
+                    padding: 15px;
+                    background: #f9f9f9;
+                    border-radius: 8px;
+                }
+                .qr-container img {
+                    max-width: 150px;
+                    height: auto;
+                    border: 2px solid #ddd;
+                    padding: 5px;
+                    background: white;
+                }
+                .qr-container p {
+                    margin-top: 10px;
+                    font-size: 11px;
+                    color: #666;
                 }
                 .print-btn {
                     background: #FF2E2E;
@@ -597,11 +606,10 @@ function generateTicket(data) {
                     </div>
                 </div>
                 
-                <div class="qr-placeholder">
-                    <div>
-                        🔲 Código QR<br>
-                        (Requiere backend)
-                    </div>
+                <div class="qr-container">
+                    <img src="${qrUrl}" alt="QR Code del pedido" />
+                    <p><strong>🔲 Escanea este QR para verificar tu pedido</strong></p>
+                    <p style="font-size: 9px;">Pedido: ${data.orderNumber}</p>
                 </div>
                 
                 <div class="footer">
