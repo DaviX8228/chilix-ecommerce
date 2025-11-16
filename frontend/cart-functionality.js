@@ -383,7 +383,7 @@ async function checkout() {
     } catch (error) {
         console.error('Error durante el checkout:', error);
         // Si falla el backend, generar ticket de todas formas (modo simulación)
-        alert('⚠️ Backend no disponible. Generando ticket en modo simulación...');
+        alert(' Backend no disponible. Generando ticket en modo simulación...');
         
         generateTicket({
             user,
@@ -452,8 +452,8 @@ function generateTicket(data) {
         `;
     }
 
-    // 🔥 AQUÍ ESTÁ LO NUEVO: Crear el QR CODE con datos del pedido
-    // Usamos la API gratuita de qrserver.com
+    // Crear el QR CODE con datos del pedido
+    // usé la API gratuita de qrserver.com :)
     const qrData = `ChiliX-Pedido:${data.orderNumber}|Cliente:${data.user.nombre}|Total:$${data.total}|Fecha:${data.date}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
 
