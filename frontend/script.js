@@ -1,54 +1,61 @@
+// ========== MENÚ HAMBURGUESA ==========
 
-// ========== MENÚ HAMBURGUESA (MÓVIL) ==========
-
-// Obtener elementos del DOM
+// Obtener elementos
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('navMenu');
 const navLinks = document.querySelectorAll('.nav-link');
 
-// Función para toggle del menú móvil
-hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    
-    // Animación del icono hamburguesa
-    const spans = hamburger.querySelectorAll('span');
-    if (navMenu.classList.contains('active')) {
-        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-        spans[1].style.opacity = '0';
-        spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
-    } else {
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
-    }
-});
+// Función del menú móvil
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        
+        // Animación del icono hamburguesa
+        const spans = hamburger.querySelectorAll('span');
+        if (navMenu.classList.contains('active')) {
+            spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+            spans[1].style.opacity = '0';
+            spans[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+        } else {
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+        }
+    });
+}
 
 // Cerrar menú al hacer clic en un enlace
 navLinks.forEach(link => {
     link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
+        if (navMenu) {
+            navMenu.classList.remove('active');
+        }
         
         // Resetear icono hamburguesa
-        const spans = hamburger.querySelectorAll('span');
-        spans[0].style.transform = 'none';
-        spans[1].style.opacity = '1';
-        spans[2].style.transform = 'none';
+        if (hamburger) {
+            const spans = hamburger.querySelectorAll('span');
+            spans[0].style.transform = 'none';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'none';
+        }
     });
 });
 
-// ========== SCROLL SUAVE Y NAVBAR ACTIVO ==========
+// SCROLL SUAVE Y NAVBAR ACTIVO 
 
 // Cambiar estilo del navbar al hacer scroll
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 100) {
-        navbar.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
-    } else {
-        navbar.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+    if (navbar) {
+        if (window.scrollY > 100) {
+            navbar.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
+        } else {
+            navbar.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+        }
     }
 });
 
-// ========== SISTEMA DE CARRITO DE COMPRAS ==========
+// SISTEMA DE CARRITO DE COMPRAS 
 
 // Array para almacenar los productos del carrito (en memoria)
 let cart = [];
@@ -58,6 +65,7 @@ let cart = [];
  * @param {string} productName - Nombre del producto
  * @param {number} price - Precio del producto
  */
+
 function addToCart(productName, price) {
     // Crear objeto del producto
     const product = {
@@ -98,16 +106,18 @@ function showNotification(message) {
     const notification = document.getElementById('cartNotification');
     const messageElement = document.getElementById('cartMessage');
     
-    // Establecer el mensaje
-    messageElement.textContent = message;
-    
-    // Mostrar notificación
-    notification.classList.add('show');
-    
-    // Ocultar después de 3 segundos
-    setTimeout(() => {
-        notification.classList.remove('show');
-    }, 3000);
+    if (notification && messageElement) {
+        // Establecer el mensaje
+        messageElement.textContent = message;
+        
+        // Mostrar notificación
+        notification.classList.add('show');
+        
+        // Ocultar después de 3 segundos
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 3000);
+    }
 }
 
 /**
@@ -120,8 +130,19 @@ function updateCartCount() {
     // Log del total
     console.log('Total de productos en carrito:', totalItems);
     
-    // Aquí podrías actualizar un badge en el navbar si lo agregas
-    // Ejemplo: document.getElementById('cartCount').textContent = totalItems;
+    // Actualizar TODOS los badges del carrito 
+    const badges = document.querySelectorAll('.cart-badge, #cartBadge, #cartBadgeNav');
+    badges.forEach(badge => {
+        if (badge) {
+            badge.textContent = totalItems;
+            // Si hay productos, ponerlo visible
+            if (totalItems > 0) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    });
 }
 
 /**
@@ -129,6 +150,7 @@ function updateCartCount() {
  */
 function saveCart() {
     localStorage.setItem('chilixCart', JSON.stringify(cart));
+    console.log('Carrito guardado en localStorage');
 }
 
 /**
@@ -187,7 +209,7 @@ function checkout() {
     }
 }
 
-// ========== ANIMACIONES AL HACER SCROLL ==========
+//  ANIMACIONES AL HACER SCROLL 
 
 /**
  * Observador de intersección para animar elementos al aparecer
@@ -208,8 +230,13 @@ const observer = new IntersectionObserver((entries) => {
 
 // Observar todas las cards
 document.addEventListener('DOMContentLoaded', () => {
-    // Cargar carrito guardado
+    // Cargar carrito guardado PRIMERO
     loadCart();
+    
+    // Actualizar enlace de usuario si existe la función
+    if (typeof updateUserLink === 'function') {
+        updateUserLink();
+    }
     
     // Animar elementos al aparecer
     const cards = document.querySelectorAll('.about-card, .product-card, .policy-card');
@@ -221,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ========== EFECTOS VISUALES ADICIONALES ==========
+//  EFECTOS VISUALES ADICIONALES
 
 /**
  * Efecto parallax suave en el hero
@@ -248,7 +275,7 @@ document.querySelectorAll('.btn-buy').forEach(button => {
     });
 });
 
-// ========== FUNCIONES AUXILIARES ==========
+// FUNCIONES AUXILIARES 
 
 /**
  * Función para obtener información del carrito
@@ -272,7 +299,7 @@ function printCart() {
     console.log('===========================');
 }
 
-// ========== EXPOSICIÓN DE FUNCIONES GLOBALES ==========
+//  EXPOSICIÓN DE FUNCIONES GLOBALES 
 // Estas funciones estarán disponibles en la consola del navegador
 window.chilixCart = {
     add: addToCart,
@@ -283,18 +310,8 @@ window.chilixCart = {
 };
 
 // Log de bienvenida
-console.log('%c🌶️ ChiliX Loaded!', 'color: #FF2E2E; font-size: 20px; font-weight: bold;');
+console.log(' ChiliX Cargado!', 'color: #FF2E2E; font-size: 20px; font-weight: bold;');
 console.log('Prueba las funciones del carrito con: window.chilixCart');
-
-// ========== EVENT LISTENERS ADICIONALES ==========
-
-// Detectar cuando el usuario está a punto de salir
-//window.addEventListener('beforeunload', (e) => {
-//    if (cart.length > 0) {
-//        //e.preventDefault();
-//        e.returnValue = 'Tienes productos en tu carrito. ¿Seguro que quieres salir?';
-//    }
-//});
 
 // Easter egg: Combo especial con teclas
 let konamiCode = [];
@@ -305,7 +322,7 @@ document.addEventListener('keydown', (e) => {
     konamiCode = konamiCode.slice(-10);
     
     if (konamiCode.join(',') === konamiSequence.join(',')) {
-        showNotification('¡Código secreto activado! 🎮 Descuento especial aplicado');
+        showNotification('¡Código secreto activado!  Descuento especial aplicado');
         console.log('🎉 ¡Descubriste el código Konami! Aquí está tu descuento especial');
     }
 });

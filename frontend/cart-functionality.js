@@ -1,8 +1,9 @@
-/* ========================================
+/* 
    FUNCIONALIDAD DEL CARRITO CON PERSONALIZACIÓN
-   ======================================== */
+   
+*/
 
-// Verificar si el usuario está logueado
+// Verificar si el usuario está logueado w
 function isUserLoggedIn() {
     const user = localStorage.getItem('chilixUser');
     return user !== null;
@@ -20,13 +21,15 @@ function updateUserLink() {
     if (userLink) {
         if (isUserLoggedIn()) {
             const user = getCurrentUser();
-            userLink.textContent = `👤 ${user.nombre}`;
+            // Mostrar solo el nombre si existe
+            const nombreCorto = user.nombre ? user.nombre.split(' ')[0] : 'Usuario';
+            userLink.textContent = `👤 ${nombreCorto}`;
             userLink.href = '#';
             userLink.onclick = (e) => {
                 e.preventDefault();
                 if (confirm('¿Cerrar sesión?')) {
                     localStorage.removeItem('chilixUser');
-                    window.location.reload();
+                    window.location.href = 'index.html';
                 }
             };
         } else {
@@ -39,6 +42,13 @@ function updateUserLink() {
 // Renderizar carrito
 function renderCart() {
     const container = document.getElementById('cartContainer');
+    
+    // Si no existe el contenedor, no hacer nada (no estamos en la página del carrito)
+    if (!container) {
+        return;
+    }
+    
+    // Cargar el carrito desde localStorage
     const cart = JSON.parse(localStorage.getItem('chilixCart') || '[]');
 
     if (cart.length === 0) {
@@ -56,7 +66,8 @@ function renderCart() {
     // Calcular totales
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const envio = 0; // Envío gratis en el CECyT 8
-    const total = subtotal + envio;
+    const extrasTotal = calculateExtras(cart);
+    const total = subtotal + envio + extrasTotal;
 
     // Renderizar items con personalización
     const itemsHTML = cart.map((item, index) => {
@@ -88,7 +99,7 @@ function renderCart() {
         return `
             <div class="cart-item" id="item-${index}">
                 <div class="item-header">
-                    <div class="item-image">🌶️</div>
+                    <div class="item-image">🌶️</div> <!-- íconos sacados de EmojiTerra -->
                     <div class="item-info">
                         <h3>${item.name}</h3>
                         <p style="color: var(--color-gray-light); font-size: 0.9rem;">
@@ -106,11 +117,11 @@ function renderCart() {
                     </div>
                     
                     <button class="customize-btn" onclick="toggleCustomization(${index})">
-                        🎨 Personalizar
+                         Personalizar
                     </button>
                     
                     <button class="remove-btn" onclick="removeItem(${index})">
-                        ❌ Eliminar
+                         Eliminar
                     </button>
                 </div>
                 
@@ -198,7 +209,7 @@ function renderCart() {
             
             <div class="summary-row">
                 <span>Extras:</span>
-                <span class="price">$${calculateExtras(cart)} MXN</span>
+                <span class="price">$${extrasTotal} MXN</span>
             </div>
             
             <div class="summary-row">
@@ -214,7 +225,7 @@ function renderCart() {
             
             <div class="summary-row total">
                 <span>Total:</span>
-                <span class="price">$${total + calculateExtras(cart)} MXN</span>
+                <span class="price">$${total} MXN</span>
             </div>
             
             ${loginSection}
@@ -261,7 +272,11 @@ function updateCustomization(index, key, value) {
 
     localStorage.setItem('chilixCart', JSON.stringify(cart));
     renderCart();
-    showNotification('Personalización actualizada ✅');
+    
+    // Mostrar notificación si existe la función
+    if (typeof showNotification === 'function') {
+        showNotification('Personalización actualizada ✅');
+    }
 }
 
 // Actualizar cantidad
@@ -275,7 +290,11 @@ function updateQuantity(index, change) {
 
     localStorage.setItem('chilixCart', JSON.stringify(cart));
     renderCart();
-    updateCartCount();
+    
+    // Actualizar contador si existe la función
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+    }
 }
 
 // Eliminar item
@@ -287,13 +306,20 @@ function removeItem(index) {
         cart.splice(index, 1);
         localStorage.setItem('chilixCart', JSON.stringify(cart));
         renderCart();
-        updateCartCount();
-        showNotification(`${itemName} eliminado del carrito`);
+        
+        // Actualizar contador si existe la función
+        if (typeof updateCartCount === 'function') {
+            updateCartCount();
+        }
+        
+        // Mostrar notificación si existe la función
+        if (typeof showNotification === 'function') {
+            showNotification(`${itemName} eliminado del carrito`);
+        }
     }
 }
 
 // Checkout y generar ticket
-
 async function checkout() {
     if (!isUserLoggedIn()) {
         alert('Por favor inicia sesión para continuar');
@@ -306,15 +332,13 @@ async function checkout() {
 
     const user = getCurrentUser();
 
-
-    // 1. Calcular los totales aquí
+    // Calcular los totales
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const extras = calculateExtras(cart); // Esta función ya existe abajo
+    const extras = calculateExtras(cart);
     const total = subtotal + extras;
-    // 🌟🌟 FIN DE LA CORRECCIÓN 🌟🌟
 
     try {
-        // Preparar items para el backend (ESTO YA ESTÁ BIEN)
+        // Preparar items para el backend
         const items = cart.map(item => ({
             producto_id: getProductIdByName(item.name),
             cantidad: item.quantity,
@@ -324,11 +348,9 @@ async function checkout() {
 
         const response = await fetch('http://localhost:3000/api/pedidos', {
             method: 'POST',
-
             headers: {
                 'Content-Type': 'application/json'
             },
-
             body: JSON.stringify({
                 usuario_id: parseInt(user.id),
                 items: items,
@@ -339,29 +361,46 @@ async function checkout() {
         const data = await response.json();
 
         if (data.success) {
-            // 2. Usar los totales calculados arriba
+            // Generar ticket con los datos reales del backend
             generateTicket({
                 user,
                 cart,
-                subtotal, // Usando la variable definida
-                extras, // Usando la variable definida
-                total, // Usando la variable definida
-                orderNumber: data.data.numero_orden, // Usando el ID real del backend
+                subtotal,
+                extras,
+                total,
+                orderNumber: data.data.numero_orden,
                 date: new Date().toLocaleString('es-MX'),
                 pedido_id: data.data.pedido_id
             });
 
-            // Limpiar carrito
-            localStorage.setItem('chilixCart', JSON.stringify([]));
-            // La función generateTicket ya tiene un setTimeout para recargar
+            // Limpiar carrito después de un momento
+            setTimeout(() => {
+                localStorage.setItem('chilixCart', JSON.stringify([]));
+                // La recarga se hace desde generateTicket
+            }, 2000);
         } else {
             alert('Error al crear pedido: ' + data.error);
         }
 
     } catch (error) {
-        // ¡Este error ya no debería aparecer si todo lo anterior funciona!
-        console.error('Error durante el proceso de checkout (post-respuesta):', error);
-        alert('Error al procesar el pedido. Revisa la consola de desarrollador para detalles.');
+        console.error('Error durante el checkout:', error);
+        // Si falla el backend, generar ticket de todas formas (modo simulación)
+        alert('⚠️ Backend no disponible. Generando ticket en modo simulación...');
+        
+        generateTicket({
+            user,
+            cart,
+            subtotal,
+            extras,
+            total,
+            orderNumber: 'SIM-' + Date.now(),
+            date: new Date().toLocaleString('es-MX'),
+            pedido_id: 'simulacion'
+        });
+        
+        setTimeout(() => {
+            localStorage.setItem('chilixCart', JSON.stringify([]));
+        }, 2000);
     }
 }
 
@@ -374,6 +413,7 @@ function getProductIdByName(name) {
     };
     return ids[name] || 1;
 }
+
 // Generar ticket de compra
 function generateTicket(data) {
     const ticketWindow = window.open('', '_blank', 'width=400,height=700');
@@ -568,10 +608,6 @@ function generateTicket(data) {
                     <p><strong>¡Gracias por tu compra!</strong></p>
                     <p>Fundado por David Velázquez</p>
                     <p>hola@chilix.mx | WhatsApp: 55 1234 5678</p>
-                    <p style="margin-top: 10px;">
-                        ⚠️ <strong>NOTA:</strong> Este ticket es una simulación.<br>
-                        El sistema completo de pedidos requiere backend.
-                    </p>
                 </div>
                 
                 <button class="print-btn" onclick="window.print()">
@@ -585,18 +621,29 @@ function generateTicket(data) {
     ticketWindow.document.write(ticketHTML);
     ticketWindow.document.close();
 
-    // Limpiar carrito después de mostrar ticket
+    // Limpiar carrito y recargar después de mostrar ticket
     setTimeout(() => {
-        if (confirm('✅ Ticket generado.\n\n¿Deseas limpiar el carrito?')) {
-            localStorage.setItem('chilixCart', JSON.stringify([]));
+        if (confirm('✅ Ticket generado.\n\n¿Deseas volver al inicio?')) {
+            window.location.href = 'index.html';
+        } else {
             window.location.reload();
         }
-    }, 1000);
+    }, 1500);
 }
 
-// Inicialización
+// Inicialización cuando carga la página
 document.addEventListener('DOMContentLoaded', () => {
+    // Actualizar enlace de usuario
     updateUserLink();
+    
+    // Renderizar carrito si estamos en esa página
     renderCart();
-    updateCartCount();
+    
+    // Cargar carrito y actualizar contador
+    if (typeof loadCart === 'function') {
+        loadCart();
+    }
+    if (typeof updateCartCount === 'function') {
+        updateCartCount();
+    }
 });
