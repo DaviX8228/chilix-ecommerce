@@ -98,7 +98,7 @@ function renderCart() {
         return `
             <div class="cart-item" id="item-${index}">
                 <div class="item-header">
-                    <div class="item-image">🌶️</div>   <!-- Emojis sacados de EMOJI TERRA y Claude -->
+                    <div class="item-image">🌶️</div>
                     <div class="item-info">
                         <h3>${item.name}</h3>
                         <p style="color: var(--color-gray-light); font-size: 0.9rem;">
@@ -345,7 +345,8 @@ async function checkout() {
             personalizaciones: item.customizations || {}
         }));
 
-        const response = await fetch('http://localhost:3000/api/pedidos', {
+        //  Usar CONFIG.API_URL en lugar de localhost
+        const response = await fetch(`${CONFIG.API_URL}/api/pedidos`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -452,8 +453,7 @@ function generateTicket(data) {
         `;
     }
 
-    // Crear el QR CODE con datos del pedido
-    // usé la API gratuita de qrserver.com :)
+    // Usé API gratuita de qrserver.com
     const qrData = `ChiliX-Pedido:${data.orderNumber}|Cliente:${data.user.nombre}|Total:$${data.total}|Fecha:${data.date}`;
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrData)}`;
 
@@ -631,7 +631,7 @@ function generateTicket(data) {
 
     // Limpiar carrito y recargar después de mostrar ticket
     setTimeout(() => {
-        if (confirm('✅ Ticket generado.\n\n¿Deseas volver al inicio?')) {
+        if (confirm(' Ticket generado.\n\n¿Deseas volver al inicio?')) {
             window.location.href = 'index.html';
         } else {
             window.location.reload();

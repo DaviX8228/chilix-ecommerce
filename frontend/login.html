@@ -13,8 +13,11 @@
 
     <link rel="stylesheet" href="styles.css">
 </head>
-
+<!-- scripts -->
+<script src="/backend/config/config.js"></script>
+<script src="script.js"></script>
 <body>
+
 
     <div class="login-page">
         <div class="login-container">
@@ -140,8 +143,7 @@
             }, 3000);
         }
 
-        // Manejar login
-        // Login
+        // Login con URL dinámica
         async function handleLogin(event) {
             event.preventDefault();
 
@@ -149,7 +151,8 @@
             const password = document.getElementById('loginPassword').value;
 
             try {
-                const response = await fetch('http://localhost:3000/api/usuarios/login', {
+                //  Usar CONFIG.API_URL en lugar de localhost
+                const response = await fetch(`${CONFIG.API_URL}/api/usuarios/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -173,11 +176,11 @@
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error al iniciar sesión');
+                alert('Error al iniciar sesión. Verifica tu conexión.');
             }
         }
 
-        // Registro
+        // Registro con URL, dinamica?
         async function handleRegister(event) {
             event.preventDefault();
 
@@ -187,7 +190,8 @@
             const password = document.getElementById('registerPassword').value;
 
             try {
-                const response = await fetch('http://localhost:3000/api/usuarios/register', {
+                //  Usar CONFIG.API_URL en lugar de localhost
+                const response = await fetch(`${CONFIG.API_URL}/api/usuarios/register`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -211,7 +215,7 @@
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error al crear cuenta');
+                alert('Error al crear cuenta. Verifica tu conexión.');
             }
         }
 
@@ -219,12 +223,12 @@
         window.addEventListener('DOMContentLoaded', () => {
             const user = localStorage.getItem('chilixUser');
             if (user) {
-                if (confirm('Ya tienes una sesión activa. ¿Ir al carrito?')) {
-                    window.location.href = 'carrito.html';
-                }
+                // Redirigir directamente al carrito sin preguntar
+                window.location.href = 'carrito.html';
             }
         });
     </script>
+
 </body>
 
 </html>
