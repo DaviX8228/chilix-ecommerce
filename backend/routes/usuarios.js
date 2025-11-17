@@ -1,174 +1,143 @@
-/* ============================================
-   CHILIX - RUTAS DE USUARIOS
-   Registro, login y gestión de usuarios
-   ============================================ */
-
+// routes/usuarios.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { query } = require('../config/database');
-const { body, validationResult } = require('express-validator');
+const { pool } = require('../config/database'); // ✅ IMPORTANTE: pool, no db
 
 // ============================================
-// POST /api/usuarios/register
-// Registrar nuevo usuario
+// POST /api/usuarios/register - Registrar nuevo usuario
 // ============================================
-router.post('/register', [
-    body('nombre').notEmpty().withMessage('Nombre requerido'),
-    body('email').isEmail().withMessage('Email inválido'),
-    body('password').isLength({ min: 6 }).withMessage('Password debe tener al menos 6 caracteres'),
-    body('telefono').optional().isMobilePhone('es-MX').withMessage('Teléfono inválido')
-], async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
-        // Validar
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        const { nombre, email, telefono, password } = req.body;
+        
+        console.log('📝 Registrando nuevo usuario:', email);
+        
+        // Validaciones básicas
+        if (!nombre || !email || !password) {
             return res.status(400).json({
                 success: false,
-                errors: errors.array()
+                error: 'Faltan datos requeridos (nombre, email, password)'
             });
         }
         
-        const { nombre, email, telefono, password } = req.body;
+        // Validar formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Email inválido'
+            });
+        }
         
-        // Verificar si el email ya existe
-        const [existingUser] = await query(
+        // Verificar que el email no exista
+        const [usuariosExistentes] = await pool.query(
             'SELECT id FROM usuarios WHERE email = ?',
             [email]
         );
         
-        if (existingUser) {
-            return res.status(400).json({
+        if (usuariosExistentes.length > 0) {
+            return res.status(409).json({
                 success: false,
-                error: 'Este email ya está registrado'
+                error: 'El email ya está registrado'
             });
         }
         
         // Encriptar password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
         
         // Insertar usuario
-        const result = await query(
+        const [result] = await pool.query(
             'INSERT INTO usuarios (nombre, email, telefono, password) VALUES (?, ?, ?, ?)',
-            [nombre, email, telefono, hashedPassword]
+            [nombre, email, telefono || null, hashedPassword]
         );
         
-        // Generar token JWT
-        const token = jwt.sign(
-            { id: result.insertId, email },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
+        const userId = result.insertId;
         
-        // Guardar sesión
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 24);
+        console.log('✅ Usuario registrado con ID:', userId);
         
-        await query(
-            'INSERT INTO sesiones (usuario_id, token, fecha_expiracion) VALUES (?, ?, ?)',
-            [result.insertId, token, expiresAt]
-        );
-        
+        // Retornar datos del usuario (sin password)
         res.status(201).json({
             success: true,
             message: 'Usuario registrado exitosamente',
             data: {
-                id: result.insertId,
-                nombre,
-                email,
-                token
+                id: userId,
+                nombre: nombre,
+                email: email,
+                telefono: telefono
             }
         });
         
     } catch (error) {
-        console.error('Error registrando usuario:', error);
+        console.error('❌ Error registrando usuario:', error.message);
         res.status(500).json({
             success: false,
-            error: 'Error al registrar usuario'
+            error: 'Error al registrar usuario',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
 
 // ============================================
-// POST /api/usuarios/login
-// Iniciar sesión
+// POST /api/usuarios/login - Iniciar sesión
 // ============================================
-router.post('/login', [
-    body('email').isEmail().withMessage('Email inválido'),
-    body('password').notEmpty().withMessage('Password requerido')
-], async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
-        // Validar
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
+        const { email, password } = req.body;
+        
+        console.log('🔐 Intento de login:', email);
+        
+        // Validaciones básicas
+        if (!email || !password) {
             return res.status(400).json({
                 success: false,
-                errors: errors.array()
+                error: 'Email y password son requeridos'
             });
         }
         
-        const { email, password } = req.body;
-        
-        // Buscar usuario
-        const [user] = await query(
-            'SELECT id, nombre, email, password, activo FROM usuarios WHERE email = ?',
+        // Buscar usuario por email
+        const [usuarios] = await pool.query(
+            'SELECT * FROM usuarios WHERE email = ? AND activo = TRUE',
             [email]
         );
         
-        if (!user) {
+        if (usuarios.length === 0) {
             return res.status(401).json({
                 success: false,
-                error: 'Credenciales inválidas'
+                error: 'Email o password incorrectos'
             });
         }
         
-        if (!user.activo) {
-            return res.status(401).json({
-                success: false,
-                error: 'Usuario desactivado'
-            });
-        }
+        const usuario = usuarios[0];
         
         // Verificar password
-        const validPassword = await bcrypt.compare(password, user.password);
+        const passwordMatch = await bcrypt.compare(password, usuario.password);
         
-        if (!validPassword) {
+        if (!passwordMatch) {
             return res.status(401).json({
                 success: false,
-                error: 'Credenciales inválidas'
+                error: 'Email o password incorrectos'
             });
         }
         
-        // Generar token JWT
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
+        console.log('✅ Login exitoso para:', email);
         
-        // Guardar sesión
-        const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 24);
-        
-        await query(
-            'INSERT INTO sesiones (usuario_id, token, fecha_expiracion) VALUES (?, ?, ?)',
-            [user.id, token, expiresAt]
-        );
-        
+        // Retornar datos del usuario (sin password)
         res.json({
             success: true,
             message: 'Login exitoso',
             data: {
-                id: user.id,
-                nombre: user.nombre,
-                email: user.email,
-                token
+                id: usuario.id,
+                nombre: usuario.nombre,
+                email: usuario.email,
+                telefono: usuario.telefono,
+                fecha_registro: usuario.fecha_registro
             }
         });
         
     } catch (error) {
-        console.error('Error en login:', error);
+        console.error('❌ Error en login:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al iniciar sesión'
@@ -177,78 +146,20 @@ router.post('/login', [
 });
 
 // ============================================
-// POST /api/usuarios/logout
-// Cerrar sesión
+// GET /api/usuarios/:id - Obtener usuario específico
 // ============================================
-router.post('/logout', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
+        const { id } = req.params;
         
-        if (!token) {
-            return res.status(400).json({
-                success: false,
-                error: 'Token no proporcionado'
-            });
-        }
+        console.log(`👤 Obteniendo usuario ID: ${id}`);
         
-        // Desactivar sesión
-        await query(
-            'UPDATE sesiones SET activa = FALSE WHERE token = ?',
-            [token]
+        const [usuarios] = await pool.query(
+            'SELECT id, nombre, email, telefono, fecha_registro, activo FROM usuarios WHERE id = ?',
+            [id]
         );
         
-        res.json({
-            success: true,
-            message: 'Sesión cerrada exitosamente'
-        });
-        
-    } catch (error) {
-        console.error('Error en logout:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al cerrar sesión'
-        });
-    }
-});
-
-// ============================================
-// GET /api/usuarios/perfil
-// Obtener perfil del usuario autenticado
-// ============================================
-router.get('/perfil', async (req, res) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1];
-        
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                error: 'Token no proporcionado'
-            });
-        }
-        
-        // Verificar token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        // Verificar que la sesión esté activa
-        const [sesion] = await query(
-            'SELECT activa FROM sesiones WHERE token = ? AND fecha_expiracion > NOW()',
-            [token]
-        );
-        
-        if (!sesion || !sesion.activa) {
-            return res.status(401).json({
-                success: false,
-                error: 'Sesión inválida o expirada'
-            });
-        }
-        
-        // Obtener datos del usuario
-        const [user] = await query(
-            'SELECT id, nombre, email, telefono, fecha_registro FROM usuarios WHERE id = ?',
-            [decoded.id]
-        );
-        
-        if (!user) {
+        if (usuarios.length === 0) {
             return res.status(404).json({
                 success: false,
                 error: 'Usuario no encontrado'
@@ -257,64 +168,183 @@ router.get('/perfil', async (req, res) => {
         
         res.json({
             success: true,
-            data: user
+            data: usuarios[0]
         });
         
     } catch (error) {
-        if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                success: false,
-                error: 'Token inválido o expirado'
-            });
-        }
-        
-        console.error('Error obteniendo perfil:', error);
+        console.error('❌ Error obteniendo usuario:', error.message);
         res.status(500).json({
             success: false,
-            error: 'Error al obtener perfil'
+            error: 'Error al obtener usuario'
         });
     }
 });
 
 // ============================================
-// GET /api/usuarios/:id/pedidos
-// Obtener pedidos de un usuario
+// GET /api/usuarios - Obtener todos los usuarios (Admin)
 // ============================================
-router.get('/:id/pedidos', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        const pedidos = await query(
-            `SELECT p.*, 
-                    (SELECT JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'producto_id', dp.producto_id,
-                            'nombre', pr.nombre,
-                            'cantidad', dp.cantidad,
-                            'precio_unitario', dp.precio_unitario,
-                            'subtotal', dp.subtotal,
-                            'personalizaciones', dp.personalizaciones
-                        )
-                    ) 
-                    FROM detalle_pedidos dp
-                    JOIN productos pr ON dp.producto_id = pr.id
-                    WHERE dp.pedido_id = p.id
-                    ) as items
-             FROM pedidos p
-             WHERE p.usuario_id = ?
-             ORDER BY p.fecha_pedido DESC`,
-            [req.params.id]
+        console.log('👥 Obteniendo todos los usuarios...');
+        
+        const [usuarios] = await pool.query(
+            'SELECT id, nombre, email, telefono, fecha_registro, activo FROM usuarios ORDER BY fecha_registro DESC'
         );
+        
+        console.log(`✅ Se encontraron ${usuarios.length} usuarios`);
         
         res.json({
             success: true,
-            count: pedidos.length,
-            data: pedidos
+            data: usuarios,
+            total: usuarios.length
         });
         
     } catch (error) {
-        console.error('Error obteniendo pedidos del usuario:', error);
+        console.error('❌ Error obteniendo usuarios:', error.message);
         res.status(500).json({
             success: false,
-            error: 'Error al obtener pedidos'
+            error: 'Error al obtener usuarios'
+        });
+    }
+});
+
+// ============================================
+// PUT /api/usuarios/:id - Actualizar usuario
+// ============================================
+router.put('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, telefono } = req.body;
+        
+        console.log(`📝 Actualizando usuario ID: ${id}`);
+        
+        // Verificar que el usuario existe
+        const [usuarios] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [id]);
+        
+        if (usuarios.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Usuario no encontrado'
+            });
+        }
+        
+        // Actualizar usuario (sin cambiar email ni password)
+        await pool.query(
+            'UPDATE usuarios SET nombre = ?, telefono = ? WHERE id = ?',
+            [nombre || usuarios[0].nombre, telefono || usuarios[0].telefono, id]
+        );
+        
+        console.log('✅ Usuario actualizado');
+        
+        res.json({
+            success: true,
+            message: 'Usuario actualizado exitosamente'
+        });
+        
+    } catch (error) {
+        console.error('❌ Error actualizando usuario:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al actualizar usuario'
+        });
+    }
+});
+
+// ============================================
+// POST /api/usuarios/:id/cambiar-password - Cambiar contraseña
+// ============================================
+router.post('/:id/cambiar-password', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password_actual, password_nuevo } = req.body;
+        
+        console.log(`🔒 Cambiando password para usuario ID: ${id}`);
+        
+        if (!password_actual || !password_nuevo) {
+            return res.status(400).json({
+                success: false,
+                error: 'Se requiere password actual y nuevo'
+            });
+        }
+        
+        // Obtener usuario
+        const [usuarios] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [id]);
+        
+        if (usuarios.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Usuario no encontrado'
+            });
+        }
+        
+        const usuario = usuarios[0];
+        
+        // Verificar password actual
+        const passwordMatch = await bcrypt.compare(password_actual, usuario.password);
+        
+        if (!passwordMatch) {
+            return res.status(401).json({
+                success: false,
+                error: 'Password actual incorrecto'
+            });
+        }
+        
+        // Encriptar nuevo password
+        const hashedPassword = await bcrypt.hash(password_nuevo, 10);
+        
+        // Actualizar password
+        await pool.query('UPDATE usuarios SET password = ? WHERE id = ?', [hashedPassword, id]);
+        
+        console.log('✅ Password actualizado');
+        
+        res.json({
+            success: true,
+            message: 'Password actualizado exitosamente'
+        });
+        
+    } catch (error) {
+        console.error('❌ Error cambiando password:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al cambiar password'
+        });
+    }
+});
+
+// ============================================
+// DELETE /api/usuarios/:id - Desactivar usuario
+// ============================================
+router.delete('/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        console.log(`🗑️ Desactivando usuario ID: ${id}`);
+        
+        // Verificar que existe
+        const [usuarios] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [id]);
+        
+        if (usuarios.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Usuario no encontrado'
+            });
+        }
+        
+        // Desactivar en lugar de eliminar (soft delete)
+        await pool.query('UPDATE usuarios SET activo = FALSE WHERE id = ?', [id]);
+        
+        console.log('✅ Usuario desactivado');
+        
+        res.json({
+            success: true,
+            message: 'Usuario desactivado exitosamente'
+        });
+        
+    } catch (error) {
+        console.error('❌ Error desactivando usuario:', error.message);
+        res.status(500).json({
+            success: false,
+            error: 'Error al desactivar usuario'
         });
     }
 });

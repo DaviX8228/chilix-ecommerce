@@ -1,5 +1,5 @@
 /* ============================================
-   CHILIX - SERVIDOR PRINCIPAL
+   CHILIX - SERVIDOR PRINCIPAL (RENDER)
    Backend con Node.js + Express + MySQL
    Fundado por David Velazquez - CECyT 8
    ============================================ */
@@ -23,15 +23,37 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ============================================
+// CONFIGURACIÓN PARA RENDER (IMPORTANTE)
+// ============================================
+
+// Trust proxy - NECESARIO para Render
+app.set('trust proxy', 1);
+
+// ============================================
 // MIDDLEWARES
 // ============================================
 
 // Seguridad con Helmet
 app.use(helmet());
 
-// CORS
+// CORS - Permitir tu frontend de Vercel
 const corsOptions = {
-    origin: process.env.ALLOWED_ORIGINS?.split(',') || '*',
+    origin: function (origin, callback) {
+        // Lista de orígenes permitidos
+        const allowedOrigins = [
+            'https://chilix-wine.vercel.app', // Cambia esto por tu URL de Vercel
+            'http://localhost:5500',
+            'http://localhost:3000',
+            'http://127.0.0.1:5500'
+        ];
+        
+        // Permitir requests sin origin (como Postman, curl, etc.)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('No permitido por CORS'));
+        }
+    },
     credentials: true,
     optionsSuccessStatus: 200
 };
@@ -46,16 +68,20 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
-// Rate limiting (limitar requests por IP)
+// Rate limiting (limitar requests por IP) - ARREGLADO PARA RENDER
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 900000, // 15 minutos
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-    message: 'Demasiadas peticiones desde esta IP, intenta de nuevo más tarde'
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Máximo 100 requests por ventana
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    // Handler personalizado para evitar el error
+    handler: (req, res) => {
+        res.status(429).json({
+            error: 'Demasiadas peticiones, intenta de nuevo más tarde'
+        });
+    }
 });
 app.use('/api/', limiter);
-
-// Servir archivos estáticos del frontend
-app.use(express.static('./frontend'));
 
 // ============================================
 // RUTAS API
@@ -68,22 +94,33 @@ app.get('/', (req, res) => {
         version: '1.0.0',
         fundador: 'David Velázquez',
         institucion: 'CECyT 8 "Narciso Bassols"',
+        status: 'Online',
         endpoints: {
             productos: '/api/productos',
             usuarios: '/api/usuarios',
-            pedidos: '/api/pedidos'
+            pedidos: '/api/pedidos',
+            health: '/api/health'
         }
     });
 });
 
 // Health check
 app.get('/api/health', async (req, res) => {
-    const dbConnected = await testConnection();
-    res.json({
-        status: 'ok',
-        database: dbConnected ? 'conectada' : 'desconectada',
-        timestamp: new Date().toISOString()
-    });
+    try {
+        const dbConnected = await testConnection();
+        res.json({
+            status: 'ok',
+            database: dbConnected ? 'conectada ✅' : 'desconectada ❌',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime()
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            database: 'error',
+            error: error.message
+        });
+    }
 });
 
 // Rutas principales
@@ -99,7 +136,8 @@ app.use('/api/pedidos', pedidosRoutes);
 app.use((req, res) => {
     res.status(404).json({
         error: 'Ruta no encontrada',
-        path: req.path
+        path: req.path,
+        method: req.method
     });
 });
 
@@ -119,30 +157,31 @@ app.use((err, req, res, next) => {
 
 const startServer = async () => {
     try {
+        console.log('🔄 Iniciando servidor ChiliX...');
+        console.log('📦 Environment:', process.env.NODE_ENV || 'production');
+        
         // Testear conexión a la base de datos
+        console.log('🔍 Verificando conexión a base de datos...');
         const dbConnected = await testConnection();
         
         if (!dbConnected) {
             console.error('❌ No se pudo conectar a la base de datos');
-            console.log('💡 Verifica tu archivo .env y que MySQL esté corriendo');
-            process.exit(1);
+            console.log('💡 Verifica tus variables de entorno en Render');
+            // No hacemos exit para que Render no crashee
+        } else {
+            console.log('✅ Base de datos conectada exitosamente');
         }
         
         // Iniciar servidor
-        app.listen(PORT, () => {
+        app.listen(PORT, '0.0.0.0', () => {
             console.log('\n🌶️  ===================================');
-            console.log('     ChiliX Backend Iniciado');
+            console.log('     ChiliX Backend LIVE en Render');
             console.log('   ===================================');
-            console.log(`\n   🚀 Servidor: http://localhost:${PORT}`);
-            console.log(`   📊 API: http://localhost:${PORT}/api`);
-            console.log(`   💾 Base de datos: ${process.env.DB_NAME}`);
+            console.log(`\n   🚀 Servidor corriendo en puerto ${PORT}`);
+            console.log(`   📊 API disponible en /api`);
+            console.log(`   💾 Base de datos: ${dbConnected ? '✅ Conectada' : '❌ Desconectada'}`);
             console.log(`   🏫 CECyT 8 "Narciso Bassols"`);
             console.log(`   👨‍💻 Fundador: David Velázquez\n`);
-            console.log('   Endpoints disponibles:');
-            console.log('   • GET  /api/productos');
-            console.log('   • POST /api/usuarios/register');
-            console.log('   • POST /api/usuarios/login');
-            console.log('   • POST /api/pedidos\n');
             console.log('   ===================================\n');
         });
         
@@ -154,7 +193,7 @@ const startServer = async () => {
 
 // Manejar cierre graceful
 process.on('SIGTERM', () => {
-    console.log('\n👋 Cerrando servidor...');
+    console.log('\n👋 Cerrando servidor gracefully...');
     process.exit(0);
 });
 
