@@ -36,28 +36,14 @@ app.set('trust proxy', 1);
 // Seguridad con Helmet
 app.use(helmet());
 
-// CORS - Permitir tu frontend de Vercel
-const corsOptions = {
-    origin: function (origin, callback) {
-        // Lista de orígenes permitidos
-        const allowedOrigins = [
-            'https://chilix-wine.vercel.app', // Cambia esto por tu URL de Vercel
-            'http://localhost:5500',
-            'http://localhost:3000',
-            'http://127.0.0.1:5500'
-        ];
-        
-        // Permitir requests sin origin (como Postman, curl, etc.)
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('No permitido por CORS'));
-        }
-    },
+// CORS - Permitir TODOS los orígenes (TEMPORAL PARA DEBUG)
+app.use(cors({
+    origin: '*', // Permitir todos temporalmente
     credentials: true,
-    optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Body parsers
 app.use(express.json());
