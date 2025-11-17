@@ -3,9 +3,11 @@
    Creación y gestión de pedidos
    ============================================ */
 
-const db = require('../config/database');
+
+const express = require('express');
+const router = express.Router();
+const db = require('../config/database'); 
 const { query, transaction } = db;
-const { query, transaction } = require('../config/database');
 const { body, param, validationResult } = require('express-validator');
 
 // ============================================
