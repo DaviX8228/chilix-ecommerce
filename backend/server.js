@@ -55,7 +55,7 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // Servir archivos estáticos del frontend
-app.use(express.static('../frontend'));
+app.use(express.static('./frontend'));
 
 // ============================================
 // RUTAS API
