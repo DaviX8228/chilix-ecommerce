@@ -98,7 +98,7 @@ function renderCart() {
         return `
             <div class="cart-item" id="item-${index}">
                 <div class="item-header">
-                    <div class="item-image"><img src="/images/gomitas.png" alt="ChiliX gomitas" width = "98px"></div>
+                    <div class="item-image"><img src="gomitas.png" alt="ChiliX gomitas" width = "98px"></div>
                     <div class="item-info">
                         <h3>${item.name}</h3>
                         <p style="color: var(--color-gray-light); font-size: 0.9rem;">
