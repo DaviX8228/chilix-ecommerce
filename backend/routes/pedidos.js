@@ -91,7 +91,7 @@ router.post('/', async (req, res) => {
             );
             
             const pedido_id = resultPedido.insertId;
-            console.log('✅ Pedido creado con ID:', pedido_id);
+            console.log('Pedido creado con ID:', pedido_id);
             
             // 2. Insertar items del pedido
             for (const item of items) {
@@ -205,7 +205,7 @@ router.get('/:id', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error obteniendo pedido:', error);
+        console.error('Error obteniendo pedido:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener pedido'
