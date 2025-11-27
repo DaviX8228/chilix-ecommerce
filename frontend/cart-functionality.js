@@ -32,7 +32,7 @@ function updateUserLink() {
                 }
             };
         } else {
-            userLink.textContent = '👤 Iniciar sesión';
+            userLink.textContent = 'Iniciar sesión';
             userLink.href = 'login.html';
         }
     }
@@ -98,7 +98,7 @@ function renderCart() {
         return `
             <div class="cart-item" id="item-${index}">
                 <div class="item-header">
-                    <div class="item-image">🌶️</div>
+                    <div class="item-image"><img src="/images/gomitas.png" alt="ChiliX gomitas" width = "98px"></div>
                     <div class="item-info">
                         <h3>${item.name}</h3>
                         <p style="color: var(--color-gray-light); font-size: 0.9rem;">
@@ -384,7 +384,7 @@ async function checkout() {
     } catch (error) {
         console.error('Error durante el checkout:', error);
         // Si falla el backend, generar ticket de todas formas (modo simulación)
-        alert(' Backend no disponible. Generando ticket en modo simulación...');
+        alert(' Generando ticket...');
         
         generateTicket({
             user,
