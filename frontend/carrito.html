@@ -10,12 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="styles.css">
-     <!--Icono del sitio web-->
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 </head>
-<!-- scripts -->
-<script src="/backend/config/config.js"></script>
-<script src="script.js"></script>
 <body>
     
     <!-- ========== NAVEGACIÓN ========== -->
@@ -93,7 +89,13 @@
         </div>
     </footer>
 
+    <!-- 1. Config PRIMERO (debe estar en la raíz de tu frontend) -->
+    <script src="config.js"></script>
+    
+    <!-- 2. Script general -->
     <script src="script.js"></script>
-    <script src="cart-functionality.js"></script>
+    
+    <!-- 3. Funcionalidad del carrito AL FINAL -->
+    <script src="cart.js"></script>
 </body>
 </html>

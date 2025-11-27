@@ -8,7 +8,7 @@ const { pool } = require('../config/database'); // IMPORTANTE: Importar pool cor
 // ============================================
 router.get('/', async (req, res) => {
     try {
-        console.log('📦 Obteniendo pedidos...');
+        console.log(' Obteniendo pedidos...');
         
         // CORRECTO: Usar pool.query() con await
         const [pedidos] = await pool.query(`
