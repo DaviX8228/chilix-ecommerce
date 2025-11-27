@@ -383,7 +383,7 @@ async function checkout() {
 
     } catch (error) {
         console.error('Error durante el checkout:', error);
-        // Si falla el backend, generar ticket de todas formas (modo simulación)
+        // Si falla el backend, generar ticket de todas formas (modo simulación obvio w)
         alert(' Generando ticket...');
         
         generateTicket({

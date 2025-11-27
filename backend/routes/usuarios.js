@@ -2,7 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const { pool } = require('../config/database'); // ✅ IMPORTANTE: pool, no db
+const { pool } = require('../config/database'); // pool, no db
 
 // ============================================
 // POST /api/usuarios/register - Registrar nuevo usuario
@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
     try {
         const { nombre, email, telefono, password } = req.body;
         
-        console.log('📝 Registrando nuevo usuario:', email);
+        console.log('Registrando nuevo usuario:', email);
         
         // Validaciones básicas
         if (!nombre || !email || !password) {
@@ -55,7 +55,7 @@ router.post('/register', async (req, res) => {
         
         const userId = result.insertId;
         
-        console.log('✅ Usuario registrado con ID:', userId);
+        console.log('Usuario registrado con ID:', userId);
         
         // Retornar datos del usuario (sin password)
         res.status(201).json({
@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error registrando usuario:', error.message);
+        console.error('Error registrando usuario:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al registrar usuario',
@@ -86,7 +86,7 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        console.log('🔐 Intento de login:', email);
+        console.log('Intento de login:', email);
         
         // Validaciones básicas
         if (!email || !password) {
@@ -121,7 +121,7 @@ router.post('/login', async (req, res) => {
             });
         }
         
-        console.log('✅ Login exitoso para:', email);
+        console.log('Login exitoso para:', email);
         
         // Retornar datos del usuario (sin password)
         res.json({
@@ -185,13 +185,13 @@ router.get('/:id', async (req, res) => {
 // ============================================
 router.get('/', async (req, res) => {
     try {
-        console.log('👥 Obteniendo todos los usuarios...');
+        console.log('Obteniendo todos los usuarios...');
         
         const [usuarios] = await pool.query(
             'SELECT id, nombre, email, telefono, fecha_registro, activo FROM usuarios ORDER BY fecha_registro DESC'
         );
         
-        console.log(`✅ Se encontraron ${usuarios.length} usuarios`);
+        console.log(`Se encontraron ${usuarios.length} usuarios`);
         
         res.json({
             success: true,
@@ -200,7 +200,7 @@ router.get('/', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error obteniendo usuarios:', error.message);
+        console.error('Error obteniendo usuarios:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al obtener usuarios'
@@ -216,7 +216,7 @@ router.put('/:id', async (req, res) => {
         const { id } = req.params;
         const { nombre, telefono } = req.body;
         
-        console.log(`📝 Actualizando usuario ID: ${id}`);
+        console.log(`Actualizando usuario ID: ${id}`);
         
         // Verificar que el usuario existe
         const [usuarios] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [id]);
@@ -234,7 +234,7 @@ router.put('/:id', async (req, res) => {
             [nombre || usuarios[0].nombre, telefono || usuarios[0].telefono, id]
         );
         
-        console.log('✅ Usuario actualizado');
+        console.log('Usuario actualizado');
         
         res.json({
             success: true,
@@ -242,7 +242,7 @@ router.put('/:id', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error actualizando usuario:', error.message);
+        console.error('Error actualizando usuario:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al actualizar usuario'
@@ -258,7 +258,7 @@ router.post('/:id/cambiar-password', async (req, res) => {
         const { id } = req.params;
         const { password_actual, password_nuevo } = req.body;
         
-        console.log(`🔒 Cambiando password para usuario ID: ${id}`);
+        console.log(`Cambiando password para usuario ID: ${id}`);
         
         if (!password_actual || !password_nuevo) {
             return res.status(400).json({
@@ -295,7 +295,7 @@ router.post('/:id/cambiar-password', async (req, res) => {
         // Actualizar password
         await pool.query('UPDATE usuarios SET password = ? WHERE id = ?', [hashedPassword, id]);
         
-        console.log('✅ Password actualizado');
+        console.log('Password actualizado');
         
         res.json({
             success: true,
@@ -303,7 +303,7 @@ router.post('/:id/cambiar-password', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error cambiando password:', error.message);
+        console.error('Error cambiando password:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al cambiar password'
@@ -318,7 +318,7 @@ router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
-        console.log(`🗑️ Desactivando usuario ID: ${id}`);
+        console.log(`Desactivando usuario ID: ${id}`);
         
         // Verificar que existe
         const [usuarios] = await pool.query('SELECT * FROM usuarios WHERE id = ?', [id]);
@@ -333,7 +333,7 @@ router.delete('/:id', async (req, res) => {
         // Desactivar en lugar de eliminar (soft delete)
         await pool.query('UPDATE usuarios SET activo = FALSE WHERE id = ?', [id]);
         
-        console.log('✅ Usuario desactivado');
+        console.log('Usuario desactivado');
         
         res.json({
             success: true,
@@ -341,7 +341,7 @@ router.delete('/:id', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error desactivando usuario:', error.message);
+        console.error('Error desactivando usuario:', error.message);
         res.status(500).json({
             success: false,
             error: 'Error al desactivar usuario'

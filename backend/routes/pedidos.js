@@ -1,7 +1,7 @@
 // routes/pedidos.js
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../config/database'); // IMPORTANTE: Importar pool correctamente
+const { pool } = require('../config/database'); 
 
 // ============================================
 // GET /api/pedidos - Obtener todos los pedidos
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
             ORDER BY p.fecha_pedido DESC
         `);
         
-        console.log(`✅ Se encontraron ${pedidos.length} pedidos`);
+        console.log(` Se encontraron ${pedidos.length} pedidos`);
         
         res.json({
             success: true,
@@ -30,7 +30,7 @@ router.get('/', async (req, res) => {
         });
         
     } catch (error) {
-        console.error('❌ Error obteniendo pedidos:', error);
+        console.error(' Error obteniendo pedidos:', error);
         res.status(500).json({
             success: false,
             error: 'Error al obtener pedidos',
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
     try {
         const { usuario_id, items, notas } = req.body;
         
-        console.log('📝 Creando nuevo pedido...');
+        console.log('Creando nuevo pedido...');
         console.log('Usuario:', usuario_id);
         console.log('Items:', items?.length);
         
@@ -120,7 +120,7 @@ router.post('/', async (req, res) => {
             
             // Commit de la transacción
             await connection.commit();
-            console.log('✅ Transacción completada exitosamente');
+            console.log('Transacción completada exitosamente');
             
             res.status(201).json({
                 success: true,
@@ -135,14 +135,14 @@ router.post('/', async (req, res) => {
         } catch (error) {
             // Rollback en caso de error
             await connection.rollback();
-            console.error('❌ Error en transacción, haciendo rollback');
+            console.error('Error en transacción, haciendo rollback');
             throw error;
         } finally {
             connection.release();
         }
         
     } catch (error) {
-        console.error('❌ Error creando pedido:', error);
+        console.error('Error creando pedido:', error);
         res.status(500).json({
             success: false,
             error: 'Error al crear pedido',

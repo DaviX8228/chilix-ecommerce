@@ -76,7 +76,7 @@ app.use('/api/', limiter);
 // Ruta de bienvenida
 app.get('/', (req, res) => {
     res.json({
-        mensaje: '🌶️ Bienvenido a ChiliX API',
+        mensaje: 'Bienvenido a ChiliX API',
         version: '1.0.0',
         fundador: 'David Velázquez',
         institucion: 'CECyT 8 "Narciso Bassols"',
@@ -96,7 +96,7 @@ app.get('/api/health', async (req, res) => {
         const dbConnected = await testConnection();
         res.json({
             status: 'ok',
-            database: dbConnected ? 'conectada ✅' : 'desconectada ❌',
+            database: dbConnected ? 'conectada' : 'desconectada',
             timestamp: new Date().toISOString(),
             uptime: process.uptime()
         });
@@ -129,7 +129,7 @@ app.use((req, res) => {
 
 // Manejador de errores global
 app.use((err, req, res, next) => {
-    console.error('❌ Error:', err);
+    console.error('Error:', err);
     
     res.status(err.status || 500).json({
         error: err.message || 'Error interno del servidor',
@@ -143,36 +143,36 @@ app.use((err, req, res, next) => {
 
 const startServer = async () => {
     try {
-        console.log('🔄 Iniciando servidor ChiliX...');
-        console.log('📦 Environment:', process.env.NODE_ENV || 'production');
+        console.log('Iniciando servidor ChiliX...');
+        console.log('Environment:', process.env.NODE_ENV || 'production');
         
         // Testear conexión a la base de datos
-        console.log('🔍 Verificando conexión a base de datos...');
+        console.log('Verificando conexión a base de datos...');
         const dbConnected = await testConnection();
         
         if (!dbConnected) {
-            console.error('❌ No se pudo conectar a la base de datos');
-            console.log('💡 Verifica tus variables de entorno en Render');
+            console.error('No se pudo conectar a la base de datos');
+            console.log('Verifica tus variables de entorno en Render');
             // No hacemos exit para que Render no crashee
         } else {
-            console.log('✅ Base de datos conectada exitosamente');
+            console.log('Base de datos conectada exitosamente');
         }
         
         // Iniciar servidor
         app.listen(PORT, '0.0.0.0', () => {
-            console.log('\n🌶️  ===================================');
+            console.log('\n ===================================');
             console.log('     ChiliX Backend LIVE en Render');
             console.log('   ===================================');
-            console.log(`\n   🚀 Servidor corriendo en puerto ${PORT}`);
-            console.log(`   📊 API disponible en /api`);
-            console.log(`   💾 Base de datos: ${dbConnected ? '✅ Conectada' : '❌ Desconectada'}`);
-            console.log(`   🏫 CECyT 8 "Narciso Bassols"`);
-            console.log(`   👨‍💻 Fundador: David Velázquez\n`);
+            console.log(`\n  Servidor corriendo en puerto ${PORT}`);
+            console.log(`    API disponible en /api`);
+            console.log(`    Base de datos: ${dbConnected ? 'Conectada' : 'Desconectada'}`);
+            console.log(`    CECyT 8 "Narciso Bassols"`);
+            console.log(`    Fundador: David Velázquez\n`);
             console.log('   ===================================\n');
         });
         
     } catch (error) {
-        console.error('❌ Error al iniciar el servidor:', error);
+        console.error('Error al iniciar el servidor:', error);
         process.exit(1);
     }
 };
